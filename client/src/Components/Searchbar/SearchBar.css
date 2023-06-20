@@ -1,0 +1,11 @@
+.input{
+    border-color: aqua;
+    background-color: white;
+    color: black;
+}
+
+.button{
+    border-radius: 25px;
+    border-color: rgb(85, 183, 196);
+    background-color: gray;
+}

@@ -1,0 +1,33 @@
+.container{
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: auto;
+    margin-left: 0%;
+    margin-top: auto;
+    grid-column-gap: 10px;
+    grid-row-gap: 10px;
+  }
+
+  .pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px; /* Ajusta el margen superior según tus necesidades */
+  }
+  
+  .pagination li {
+    display: inline;
+  }
+  
+  .pagination li a {
+    color: black;
+    padding: 8px 16px;
+    text-decoration: none;
+  }
+
+  .filters{
+    margin-top: 70px;
+  }
+
+  .allview{
+    display: contents;
+  }

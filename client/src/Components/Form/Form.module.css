@@ -1,0 +1,43 @@
+.container {
+    max-width: 500px;
+    margin-top: 20px;
+    align-items: center;
+  }
+  
+  h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  
+  label {
+    margin-bottom: 10px;
+  }
+  
+  input,
+  select {
+    margin-bottom: auto;
+  }
+  
+  button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #0056b3;
+  }
+  
+.form {
+    margin-top: 40px;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .divbutton{
+    margin-top: 50px;
+  }

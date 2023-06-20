@@ -1,0 +1,28 @@
+.flag{
+    position:static;
+    margin: 10px;
+    align-items: center;
+    
+}
+
+.container{
+    border: 5px solid rgb(255, 255, 255);
+    cursor: pointer;
+}
+
+.country{
+    color: white;
+    border-color: rgb(105, 46, 214);
+    width: -4rem;
+    position: static;
+    margin: auto;
+    min-width: 14rem;
+    max-width: fit-content;
+    justify-items: center;
+}
+
+.select{
+    margin-bottom: 0;
+    justify-content: center;
+    position: absolute;
+}
