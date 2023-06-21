@@ -1,21 +1,21 @@
-require('dotenv').config();
-const { conn } = require('../db');
-const { CountryActivities, Activity } = require('../models/Activity')(conn);
+const { Activity, CountryActivities, conn } = require('../db');
 
 const getActivityByCountry = async (req, res) => {
   try {
     const { db_id } = req.params;
+    console.log(`me llegó ${db_id}`)
 
-    const activitiesForCountry = await CountryActivities.findAll({
+    const countryActivities = await CountryActivities.findAll({
       where: {
         CountryDbId: db_id,
       },
-      include: [Activity], 
+      include: [Activity],
     });
+    console.log("sali de la consulta.")
 
-    const activitiesArray = activitiesForCountry.map((activity) => {
-      const { id, name, difficulty, duration, season } = activity.Activity; 
-      return { id, name, difficulty, duration, season };
+    const activitiesArray = countryActivities.map((countryActivity) => {
+      const { id, name, difficulty, duration, Season } = countryActivity.Activity;
+      return { id, name, difficulty, duration, season: Season };
     });
 
     return res.status(200).json(activitiesArray);

@@ -13,5 +13,6 @@
     grid-column-gap: .5rem;
     grid-row-gap: 2rem;
     justify-items: center;
-    border: 1px solid rgb(253, 252, 252);
+    background: none;
+    border: 1px solid rgba(148, 145, 145, 0.116);
 }

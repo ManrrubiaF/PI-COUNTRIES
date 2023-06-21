@@ -4,7 +4,7 @@
     top: 0;
     left: 0;
     right: 0;
-    background: #000000;
+    background-image: url('../../white-clouds-web-banner.jpg');
     align-items: center;
     padding: 10px;
   }
@@ -15,11 +15,11 @@
     
   }
 
-  .Form-link,
-  .Home-link,
-  .Activities-link {
+  .Formlink,
+  .Homelink {
     margin-right: 40px;
-    background: #ffffff;
+    background:none;
+    color: rgb(141, 180, 177);
   }
   
   

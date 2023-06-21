@@ -1,4 +1,4 @@
-import style from "./Details.module.css";
+import Styles from "./Details.module.css";
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
@@ -24,6 +24,7 @@ function Details({ selectedCountry }) {
   }, [id]);
 
   const fetchActivities = (db_id) => {
+    console.log(db_id);
     axios.get(`${URL}/activities/${db_id}/activities`)
       .then(response => response.data)
       .then((data) => {
@@ -35,23 +36,19 @@ function Details({ selectedCountry }) {
   };
 
   return (
-    <div className={style.container}>
-      <button>
-        <Link to='/Home' className={style.link}>Back</Link>
+    <div className={Styles.containerall}>
+      <button className={Styles.button}>
+        <Link to='/Home'>Back</Link>
       </button>
-
       {country.name ? (
-        <div>
-          <div>
-            <h1>{country?.name.official.toString()}</h1>
-          </div>
-
-          <div className={style.detail}>
-            <div className={style.containerImg}>
+        <div className={Styles.detailcontainer}>
+          <div className={Styles.containercountry}>
+            <div className={Styles.containerImg}>
+              <h1>{country?.name.official.toString()}</h1>
               <img src={country?.flag} alt={country?.name.official.toString()} />
             </div>
 
-            <div>
+            <div className={Styles.divdetail}>
               <label htmlFor="id">ID: </label>
               <p>{country?.id}</p>
               <label htmlFor="Name">Common Name: </label>
@@ -68,12 +65,12 @@ function Details({ selectedCountry }) {
             </div>
           </div>
 
-          <div>
+          <div className={Styles.activitiycontainer}>
             <h2>Activities</h2>
             {activities.length > 0 ? (
-              <ul>
+              <ul key={activity.ID}>
                 {activities.map((activity) => (
-                  <li key={activity.id}>
+                  <li key={activity.ID}>
                     <p>Name: {activity.name}</p>
                     <p>Difficulty: {activity.difficulty}</p>
                     <p>Duration: {activity.duration}</p>

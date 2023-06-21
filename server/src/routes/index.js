@@ -15,7 +15,7 @@ router.get('/firstload', firstload);
 router.get('/countries/:id', getCountryById);
 router.get('/activities/:activityId/countries', getCountryByActivity);
 router.get('/activities', getActivity);
-router.get('/activities/:countryId/activities', getActivityByCountry);
+router.get('/activities/:db_id/activities', getActivityByCountry);
 router.post('/activities', CreateActivity);
 
 module.exports = router;

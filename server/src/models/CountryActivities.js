@@ -11,10 +11,18 @@ module.exports = (sequelize) => {
     CountryDbId: {
       type: DataTypes.INTEGER,
       allowNull: false,
+      references: {
+        model: 'Country',
+        key: 'db_id',
+      },
     },
     ActivityId: {
       type: DataTypes.INTEGER,
       allowNull: false,
+      references: {
+        model: 'Activity',
+        key: 'ID',
+      },
     },
   });
   return CountryActivities;

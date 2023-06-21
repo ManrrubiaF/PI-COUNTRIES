@@ -7,7 +7,7 @@ function Country({ country, onClick }) {
   };
 
   return (
-    <div className={Styles.container} onClick={handleCountryClick}>
+    <div className={Styles.card} onClick={handleCountryClick}>
       <div className={Styles.country}>
         <div className={Styles.flag}>
           {country.flag && <img src={country.flag} alt={country.name.common.toString()} />}

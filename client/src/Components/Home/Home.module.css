@@ -2,10 +2,12 @@
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     grid-auto-rows: auto;
-    margin-left: 0%;
+    margin-left: 0px;
+    margin-left: 0px;
     margin-top: auto;
     grid-column-gap: 10px;
     grid-row-gap: 10px;
+    align-items: center;
   }
 
   .pagination {
@@ -26,8 +28,24 @@
 
   .filters{
     margin-top: 70px;
+    margin-left: 40px;
+    align-items: center;
   }
 
-  .allview{
-    display: contents;
+  .filters ul {
+    margin-top: auto;
+    display: inline;
   }
+
+.allview{
+  display:contents;
+  align-items: center;
+  margin-left: 0px;
+  margin-right: 0px;
+}
+
+.selected{
+  background-color: blue;
+  align-items: center;
+  display: contents;
+}

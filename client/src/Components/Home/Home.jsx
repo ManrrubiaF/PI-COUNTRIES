@@ -162,7 +162,7 @@ function Home() {
       }
     }
 
-    
+
 
     const itemsPerPage = 10;
     const indexOfLastItem = activePage * itemsPerPage;
@@ -197,22 +197,22 @@ function Home() {
       <Nav onSearch={onSearch} />
 
       <div className={Styles.filters}>
-        <div>
+        <ul>
           <label htmlFor="sort">Sort by:</label>
           <select id="sort" value={sortOption} onChange={handleSortChange}>
             <option value="">Choose an option</option>
             <option value="population">Population</option>
             <option value="name">Name</option>
           </select>
-        </div>
-        <div>
+        </ul>
+        <ul>
           <label htmlFor="sortOrder">Order:</label>
           <select id="sortOrder" value={sortOrder} onChange={handleSortOrderChange}>
             <option value="asc">Ascending</option>
             <option value="desc">Descending</option>
           </select>
-        </div>
-        <div>
+        </ul>
+        <ul>
           <label htmlFor="continent">Filter by Continent:</label>
           <select id="continent" value={selectedContinent} onChange={handleContinentChange}>
             <option value="">All</option>
@@ -224,8 +224,8 @@ function Home() {
             <option value="Oceania">Oceania</option>
             <option value="Antarctica">Antarctica</option>
           </select>
-        </div>
-        <div>
+        </ul>
+        <ul>
           <label htmlFor="activity">Filter by Activity:</label>
           <select id="activity" value={selectedActivity} onChange={handleActivityChange}>
             <option value="">All</option>
@@ -233,7 +233,7 @@ function Home() {
               <option key={activity.ID} value={activity.ID}>{activity.name}</option>
             ))}
           </select>
-        </div>
+        </ul>
       </div>
 
       {location.pathname === '/Home' && !selectedCountry && !isSearchResults && (
@@ -249,7 +249,7 @@ function Home() {
       )}
 
       {selectedCountry && (
-        <div className={Styles.container}>
+        <div className={Styles.selected}>
           <Details selectedCountry={selectedCountry} />
         </div>
       )}

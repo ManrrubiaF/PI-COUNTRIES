@@ -1,6 +1,5 @@
 const { conn } = require('../db');
 const CountryActivities = require('../models/CountryActivities')(conn);
-const Country = require('../models/Country')(conn);
 
 const getCountryByActivity = async (req, res) => {
   try {
