@@ -1,3 +1,6 @@
+import axios from "axios";
+
+const URL = 'localhost:3001'
 
 export const sortCountriesByPopulation = (countries, sortOrder) => {
   const sortedCountries = [...countries];
@@ -38,6 +41,7 @@ export const sortCountriesAlphabetically = (countries, sortOrder) => {
 
   return sortedCountries;
 };
+
 
 export const selectCountries = (state) => state.countries.countries;
 export const selectLoading = (state) => state.countries.loading;

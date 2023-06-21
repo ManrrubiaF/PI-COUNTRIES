@@ -22,6 +22,7 @@ function Home() {
   const [selectedContinent, setSelectedContinent] = useState('');
   const [selectedActivity, setSelectedActivity] = useState('');
   const [activities, setActivities] = useState([]);
+  const [CountryID, setCountryID] = useState([])
 
 
   useEffect(() => {
@@ -29,6 +30,22 @@ function Home() {
       loadCountries();
     }
   }, [location]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (selectedActivity) {
+        try {
+          const response = await axios.get(`${URL}/activities/${selectedActivity}/countries`);
+          setCountryID(response.data);
+          console.log(CountryID)
+        } catch (error) {
+          console.error(`Couldn't find countries with that activity`, error);
+        }
+      }
+    };
+
+    fetchData();
+  }, [selectedActivity]);
 
   useEffect(() => {
     const fetchActivities = async () => {
@@ -74,6 +91,7 @@ function Home() {
     setActivePage(pageNumber);
   };
 
+
   const handleCountryClick = (country) => {
     setSelectedCountry(country.id);
   };
@@ -112,23 +130,29 @@ function Home() {
       displayedCountries = countries;
     }
 
-    if (selectedContinent) {
+    if (selectedContinent && selectedActivity) {
+      displayedCountries = countries.filter((country) => {
+        return (
+          country.continent === selectedContinent &&
+          CountryID.includes(country.db_id)
+        );
+      });
+    }
+
+    else if (selectedContinent) {
       displayedCountries = displayedCountries.filter(
         (country) => country.continent === selectedContinent
       );
     }
-    
 
-    if (selectedActivity) {
-      displayedCountries = countries.filter((country) => {
-        // Verificar si el país tiene la actividad seleccionada en la tabla intermedia
-        return country.CountryActivities.some(
-          (countryActivity) =>
-            countryActivity.ActivityID === selectedActivity
-        );
-      });
+
+    else if (selectedActivity) {
+      displayedCountries = countries.filter(
+        (country) => {
+          return CountryID.includes(country.db_id)
+        });
     }
-    
+
 
     if (sortOption) {
       if (sortOption === 'population') {
@@ -137,6 +161,8 @@ function Home() {
         displayedCountries = sortCountriesAlphabetically(displayedCountries, sortOrder);
       }
     }
+
+    
 
     const itemsPerPage = 10;
     const indexOfLastItem = activePage * itemsPerPage;
@@ -204,7 +230,7 @@ function Home() {
           <select id="activity" value={selectedActivity} onChange={handleActivityChange}>
             <option value="">All</option>
             {activities.map((activity) => (
-              <option key={activity.id} value={activity.id}>{activity.name}</option>
+              <option key={activity.ID} value={activity.ID}>{activity.name}</option>
             ))}
           </select>
         </div>

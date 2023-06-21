@@ -16,13 +16,7 @@ const getCountryByActivity = async (req, res) => {
     const countryIds = countryActivities.map((CountryAct) => CountryAct.CountryDbId);
 
 
-    const countries = await Country.findAll({
-      where: {
-        db_id: countryIds,
-      },
-    });
-
-    return res.status(200).json(countries);
+    return res.status(200).json(countryIds);
   } catch (error) {
     return res.status(500).json(error.message);
   }
