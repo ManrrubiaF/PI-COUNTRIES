@@ -16,7 +16,6 @@ async function fetchCountriesData() {
 
 async function firstload() {
   try {
-    await conn.sync({ force: true });
 
     const countries = await fetchCountriesData();
 

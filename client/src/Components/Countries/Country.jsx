@@ -2,6 +2,7 @@ import React from 'react';
 import Styles from './Country.module.css';
 
 function Country({ country, onClick }) {
+  
   const handleCountryClick = () => {
     onClick(country);
   };

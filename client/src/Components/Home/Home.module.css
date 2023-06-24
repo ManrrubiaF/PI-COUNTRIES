@@ -13,7 +13,8 @@
   .pagination {
     display: flex;
     justify-content: center;
-    margin-top: 10px; /* Ajusta el margen superior según tus necesidades */
+    margin-top: 10px; 
+    
   }
   
   .pagination li {
@@ -21,7 +22,8 @@
   }
   
   .pagination li a {
-    color: black;
+    color: aliceblue;
+    font-size: 30px;
     padding: 8px 16px;
     text-decoration: none;
   }
@@ -39,13 +41,22 @@
 
 .allview{
   display:contents;
-  align-items: center;
+  align-content: center;
   margin-left: 0px;
   margin-right: 0px;
 }
 
 .selected{
+  display:flex;
   background-color: blue;
-  align-items: center;
-  display: contents;
+  border: solid black;
+  border-radius: 20px;
+  align-content: center;
+  justify-content: center;
+  margin-right: auto;
+  margin-left: auto;
+  margin-top: 60px;
+  width: fit-content;
+  height: fit-content;
+
 }

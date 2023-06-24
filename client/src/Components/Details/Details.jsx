@@ -1,12 +1,16 @@
 import Styles from "./Details.module.css";
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { backclick } from "../../Redux/actions";
+import { useDispatch } from "react-redux";
 
 const URL = 'http://localhost:3001';
 
 function Details({ selectedCountry }) {
-  const id = selectedCountry;
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const  id  = selectedCountry;
   const [country, setCountry] = useState({});
   const [activities, setActivities] = useState([]);
 
@@ -18,13 +22,12 @@ function Details({ selectedCountry }) {
           setCountry(data);
           fetchActivities(data.db_id);
         } else {
-          window.alert('Error, please contact administration');
+          alert('Error, please contact administration');
         }
       });
   }, [id]);
 
   const fetchActivities = (db_id) => {
-    console.log(db_id);
     axios.get(`${URL}/activities/${db_id}/activities`)
       .then(response => response.data)
       .then((data) => {
@@ -34,11 +37,16 @@ function Details({ selectedCountry }) {
         console.error('Error fetching activities:', error);
       });
   };
+  
+  const Handleclick = () => {
+    dispatch(backclick());
+    navigate('/Home');
+  }
 
   return (
-    <div className={Styles.containerall}>
+    <div className={Styles.containerall} onClick={Handleclick}>
       <button className={Styles.button}>
-        <Link to='/Home'>Back</Link>
+        Back
       </button>
       {country.name ? (
         <div className={Styles.detailcontainer}>

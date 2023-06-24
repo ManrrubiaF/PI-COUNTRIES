@@ -4,7 +4,7 @@
     top: 0;
     left: 0;
     right: 0;
-    background-image: url('../../white-clouds-web-banner.jpg');
+    background-image: url('../../images/white-clouds-web-banner.jpg');
     align-items: center;
     padding: 10px;
   }
@@ -19,7 +19,8 @@
   .Homelink {
     margin-right: 40px;
     background:none;
-    color: rgb(141, 180, 177);
+    color: rgb(0, 0, 0);
+    
   }
   
   

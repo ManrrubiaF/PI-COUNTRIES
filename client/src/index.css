@@ -2,7 +2,10 @@
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
-  background-image: url('./fondo.jpg');
+  background-image: url('./../src/images/fondo.jpg');
+  background-repeat: no-repeat;
+  background-size:auto;
+  background-attachment:fixed;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;

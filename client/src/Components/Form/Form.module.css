@@ -1,7 +1,6 @@
 .container {
-    max-width: 500px;
-    margin-top: 20px;
     align-items: center;
+    display: flex;
   }
   
   h1 {
@@ -34,12 +33,44 @@
   }
   
 .form {
-    margin-top: 40px;
+    margin: auto;
+    margin-top: 10%;
+    padding: auto;
     align-items: center;
-    display: flex;
-    flex-direction: column;
+    display:flexbox;
+    width: fit-content;
+    height: fit-content;
+    background-color: darkblue;
   }
 
   .divbutton{
     margin-top: 50px;
   }
+
+  .form span {
+    color: red;
+}
+
+.form h2{
+  color: white;
+}
+
+.form p{
+  width: fit-content;
+  height: fit-content;
+  color: red;
+  font-style: normal;
+  border: 5px solid red;
+
+}
+.form div{
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-auto-columns: auto;
+}
+
+.contenform{
+  background-color: darkblue;
+  display: contents;
+  
+}

@@ -7,7 +7,7 @@
 }
 
 .background-image {
-  background-image: url('../../fondo.jpg');
+  background-image: url('../../images/fondo.jpg');
   background-size: cover;
   background-position: center;
   width: 100%;

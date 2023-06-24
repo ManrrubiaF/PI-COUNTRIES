@@ -2,143 +2,183 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Nav from '../Nav/Nav';
 import Styles from './Form.module.css';
+import { onSearching, loadCountries } from '../../Redux/Utils';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 const URL = 'http://localhost:3001';
 
 function FormPage() {
-    const [name, setName] = useState('');
-    const [difficulty, setDifficulty] = useState('');
-    const [duration, setDuration] = useState('');
-    const [Season, setSeason] = useState('');
-    const [countries, setCountries] = useState([]);
-    const [allCountries, setAllCountries] = useState([]);
+    const navigate = useNavigate();
+    const [buttonstate, setButtonState ] = useState(true);
+    const dispatch = useDispatch();
+    const [errors, setErrors] = useState({});
+    const [Data, setData] = useState({
+        name: '',
+        difficulty: '',
+        duration: '',
+        Season: '',
+        countries: [],
+    });
+    const allcountries = useSelector((state) => state.countries)
+    
 
     useEffect(() => {
-        loadCountries();
+        loadcountries();
+
     }, []);
 
-    const loadCountries = async () => {
-        try {
-            const response = await axios.get(`${URL}/countries`);
-            setAllCountries(response.data);
-        } catch (error) {
-            console.error('Error al cargar los países:', error);
-        }
+    const loadcountries = () => {
+        loadCountries(dispatch);
     };
+
+    const onSearch = (name) => {
+        onSearching(name, dispatch);
+        navigate('/Home')
+    };
+
+    const validation = () => {
+        const error = {};
+    
+        if (Data.name.length === 0) {
+            error.name = "Name is required.";
+        }
+
+        if (Data.difficulty === "") {
+            error.difficulty = 'Difficulty is required.';
+          }
+    
+        if (Data.duration <= 0 || Data.duration > 5) {
+            error.duration = 'Duration must be greater than zero and less than or equal to 5 hours.';
+        }
+    
+        if (!Data.Season) {
+            error.Season = 'Season is required.';
+        }
+    
+        if (Data.countries.length === 0) {
+            error.countries = 'Please select at least one country.';
+        }
+
+        return error;
+    };
+
+    useEffect(() => {
+        const resultform = validation()
+        setErrors(resultform);
+        if (Object.keys(resultform).length === 0) {
+            setButtonState(false);
+        } else {
+            setButtonState(true);
+        }
+        
+
+    }, [Data]);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        // Realizar las validaciones
-        const errors = [];
 
-        if (name.trim() === '') {
-            errors.push({ field: 'name', message: 'El nombre es obligatorio.' });
-        }
-
-        if (difficulty === '') {
-            errors.push({ field: 'difficulty', message: 'Debe seleccionar una dificultad.' });
-        }
-
-        if (duration <= 0 || duration > 5) {
-            errors.push({ field: 'duration', message: 'La duración debe ser mayor a cero y menor o igual a 5 horas.' });
-        }
-
-        if (Season.trim() === '') {
-            errors.push({ field: 'Season', message: 'La temporada es obligatoria.' });
-        }
-
-        if (countries.length === 0) {
-            errors.push({ field: 'countries', message: 'Debe seleccionar al menos un país.' });
-        }
-
-        if (errors.length > 0) {
-            console.log('Formulario inválido:', errors);
-            return;
-        }
-
-        // Realizar la llamada a la API para crear la actividad turística
         try {
-            const activityData = {
-                name,
-                difficulty,
-                duration: parseInt(duration),
-                Season,
-                countries,
-            };
-            console.log(activityData);
+            const response = await axios.post(`${URL}/activities`, Data);
+            alert('Actividad turística creada:', response.data);
 
-            const response = await axios.post(`${URL}/activities`, activityData);
-            console.log('Actividad turística creada:', response.data);
-
-            // Limpiar los campos del formulario después de crear la actividad
-            setName('');
-            setDifficulty('');
-            setDuration('');
-            setSeason('');
-            setCountries([]);
+            setData({
+                name: '',
+                difficulty: '',
+                duration: '',
+                Season: '',
+                countries: [],
+            });
         } catch (error) {
             console.error('Error al crear la actividad turística:', error);
         }
+
     };
 
-    const sortedCountries = allCountries.sort((a, b) =>
+    const handleChange = (event) => {
+        const { name, value } = event.target;
+
+        if (name === 'countries') {
+            const selectedCountries = Array.from(event.target.selectedOptions, option => option.value);
+            setData(Data => ({
+                ...Data,
+                [name]: selectedCountries,
+            }));
+        } else {
+            setData(Data => ({
+                ...Data,
+                [name]: value
+            }));
+        }
+
+        validation(name, value);
+    }
+
+    const sortedCountries = allcountries.sort((a, b) =>
         a.name.common.localeCompare(b.name.common)
     );
 
     return (
         <div className={Styles.container}>
-            <Nav />
-            <div className={Styles.form}>
+            <Nav onSearch={onSearch} />
+            <div className={Styles.contenform}>
+                <div className={Styles.form}>
+                    <h1>Tourist Activity Creation Form</h1>
+                    <h2>Checked boxes are required</h2>
 
-                <h1>Tourist Activity Creation Form</h1>
+                    <form onSubmit={handleSubmit}>
+                        <div>
+                            <label htmlFor="name">Name: <span>*</span></label>
+                            <input type="text" name="name" value={Data.name} onChange={handleChange} />
+                        </div>
+                        {errors.name && (<p>{errors.name}</p>)}
 
-                <form onSubmit={handleSubmit}>
-                    <div>
-                        <label htmlFor="name">Name:</label>
-                        <input type="text" id="name" value={name} onChange={(e) => setName(e.target.value)} />
-                    </div>
+                        <div>
+                            <label htmlFor="difficulty">Difficuty: <span>*</span></label>
+                            <select name="difficulty" value={Data.difficulty} onChange={handleChange}>
+                                <option value="">Select an option</option>
+                                <option value="Easy">Easy</option>
+                                <option value="Medium">Medium</option>
+                                <option value="Hard">Hard</option>
+                            </select>
+                            {errors.difficulty && (<p>{errors.difficulty}</p>)}
+                        </div>
 
-                    <div>
-                        <label htmlFor="difficulty">Difficuty:</label>
-                        <select id="difficulty" value={difficulty} onChange={(e) => setDifficulty(e.target.value)}>
-                            <option value="">Select an option</option>
-                            <option value="Easy">Easy</option>
-                            <option value="Medium">Medium</option>
-                            <option value="Hard">Hard</option>
-                        </select>
-                    </div>
+                        <div>
+                            <label htmlFor="duration">Duration (hours): <span >*</span></label>
+                            <input type="number" min="1" max="5" name="duration" value={Data.duration} onChange={handleChange} />
+                            {errors.duration && (<p>{errors.duration}</p>)}
+                        </div>
 
-                    <div>
-                        <label htmlFor="duration">Duration (hours):</label>
-                        <input type="text" id="duration" value={duration} onChange={(e) => setDuration(e.target.value)} />
-                    </div>
+                        <div>
+                            <label htmlFor="Season">Season: <span >*</span></label>
+                            <select name="Season" value={Data.Season} onChange={handleChange}>
+                                <option value="Summer">Summer</option>
+                                <option value="Autumn">Autumn</option>
+                                <option value="Winter">Winter</option>
+                                <option value="Spring">Spring</option>
+                            </select>
+                            {errors.Season && (<p>{errors.Season}</p>)}
+                        </div>
 
-                    <div>
-                        <label htmlFor="Season">Season:</label>
-                        <select id="Season" value={Season} onChange={(e) => setSeason(e.target.value)}>
-                            <option value="">Select an option</option>
-                            <option value="Summer">Summer</option>
-                            <option value="Autumn">Autumn</option>
-                            <option value="Winter">Winter</option>
-                            <option value="Spring">Spring</option>
-                        </select>
-                    </div>
+                        <div>
+                            <label htmlFor="countries">Countries: <span>*</span>   Ctrl + Click for multiple selections.</label>
+                            <select name="countries" multiple value={Data.countries} onChange={handleChange}>
+                                {sortedCountries.map(country => (
+                                    <option key={country.db_id} value={country.db_id}>{country.name.common}</option>
+                                ))}
+                            </select>
+                            {errors.countries && (<p>{errors.countries}</p>)}
+                        </div>
 
-                    <div>
-                        <label htmlFor="countries">Countries:</label>
-                        <select id="countries" multiple value={countries} onChange={(e) => setCountries(Array.from(e.target.selectedOptions, option => option.value))}>
-                            <option value="">Select a Country</option>
-                            {sortedCountries.map(country => (
-                                <option key={country.db_id} value={country.db_id}>{country.name.common}</option>
-                            ))}
-                        </select>
-                    </div>
-
-                    <div className={Styles.divbutton}>
-                        <button type="submit">Create Tourist Activity</button>
-                    </div>
-                </form>
+                        <div className={Styles.divbutton}>
+                            {!buttonstate &&  (
+                            <button type="submit" >Create Tourist Activity</button>
+                            )}
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     );

@@ -1,35 +1,47 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useLocation } from 'react-router-dom';
 import Countries from '../Countries/Countries';
 import Details from '../Details/Details';
 import Nav from '../Nav/Nav';
 import Pagination from 'react-js-pagination';
 import Styles from './Home.module.css';
-import { sortCountriesByPopulation, sortCountriesAlphabetically } from '../../Redux/Utils';
+import {
+  sortCountriesByPopulation,
+  sortCountriesAlphabetically,
+  onSearching,
+  loadCountries,
+  fetchActivities,
+} from '../../Redux/Utils';
+import { useDispatch, useSelector } from 'react-redux';
+import { setPage, sel_country } from '../../Redux/actions';
+import { useLocation } from 'react-router-dom';
+
 
 const URL = 'http://localhost:3001';
 
 function Home() {
   const location = useLocation();
-  const [countries, setCountries] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [activePage, setActivePage] = useState(1);
-  const [selectedCountry, setSelectedCountry] = useState(null);
-  const [isSearchResults, setIsSearchResults] = useState(false);
+  const dispatch = useDispatch();
+  const countries = useSelector((state) => state.countries);
+  const isLoading = useSelector((state) => state.isLoading);
+  const activePage = useSelector((state) => state.activePage);
+  const isSearchResults = useSelector((state) => state.isSearchResults);
+  const searchResults = useSelector(state => state.searchResults);
+  const activities = useSelector((state) => state.activities);
+  const selectedCountry = useSelector((state) => state.selectedCountry);
   const [sortOrder, setSortOrder] = useState('');
   const [sortOption, setSortOption] = useState('');
   const [selectedContinent, setSelectedContinent] = useState('');
-  const [selectedActivity, setSelectedActivity] = useState('');
-  const [activities, setActivities] = useState([]);
-  const [CountryID, setCountryID] = useState([])
+  const [selectedActivity, setSelectedActivity] = useState('');  
+  const [CountryID, setCountryID] = useState([]);
 
 
   useEffect(() => {
-    if (location.pathname === '/Home') {
-      loadCountries();
+    if (isLoading) {
+      loadcountries();
+      findactivities();
     }
-  }, [location]);
+  }, [isLoading]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -37,7 +49,6 @@ function Home() {
         try {
           const response = await axios.get(`${URL}/activities/${selectedActivity}/countries`);
           setCountryID(response.data);
-          console.log(CountryID)
         } catch (error) {
           console.error(`Couldn't find countries with that activity`, error);
         }
@@ -47,53 +58,25 @@ function Home() {
     fetchData();
   }, [selectedActivity]);
 
-  useEffect(() => {
-    const fetchActivities = async () => {
-      try {
-        const response = await axios.get(`${URL}/activities`);
-        setActivities(response.data);
-      } catch (error) {
-        console.error(`Couldn't load activities.`, error);
-      }
-    };
 
-    fetchActivities();
-  }, []);
-
-
-  const onSearch = async (name) => {
-    try {
-      const { data } = await axios.get(`${URL}/countries/name?name=${name}`);
-      if (data) {
-        setCountries(data);
-        setIsSearchResults(true);
-        setSelectedCountry(null);
-      }
-    } catch (error) {
-      alert(`That country doesn't exist or we don't have information about it.`);
-    }
+  const findactivities = async () => {
+    fetchActivities(dispatch);
   };
 
-  const loadCountries = async () => {
-    try {
-      setIsLoading(true);
-      const response = await axios.get(`${URL}/countries`);
-      setCountries(response.data);
-      setIsLoading(false);
-      setSelectedCountry(null);
-    } catch (error) {
-      console.error(`Couldn't load countries.`, error);
-      setIsLoading(false);
-    }
+  const onSearch = (name) => {
+    onSearching(name, dispatch);
+  };
+
+  const loadcountries = () => {
+    loadCountries(dispatch);
   };
 
   const handlePageChange = (pageNumber) => {
-    setActivePage(pageNumber);
+    dispatch(setPage(pageNumber));
   };
 
-
   const handleCountryClick = (country) => {
-    setSelectedCountry(country.id);
+    dispatch(sel_country(country.id));
   };
 
   const handleSortChange = (event) => {
@@ -106,30 +89,35 @@ function Home() {
 
     const newSortOrder = sortOrder === 'asc' ? 'desc' : 'asc';
     setSortOrder(newSortOrder);
+    dispatch(setPage(1));
   };
 
   const handleSortOrderChange = (event) => {
     const order = event.target.value;
     setSortOrder(order);
+    dispatch(setPage(1));
   };
 
   const handleContinentChange = (event) => {
     const continent = event.target.value;
     setSelectedContinent(continent);
+    dispatch(setPage(1));
   };
 
   const handleActivityChange = (event) => {
     const activity = event.target.value;
     setSelectedActivity(activity);
+    dispatch(setPage(1));
   };
+  console.log(selectedCountry)
 
   const renderCountries = () => {
     let displayedCountries = countries;
 
-    if (isSearchResults) {
-      displayedCountries = countries;
+    if (isSearchResults && !selectedCountry) {
+      displayedCountries = searchResults;
     }
-
+    
     if (selectedContinent && selectedActivity) {
       displayedCountries = countries.filter((country) => {
         return (
@@ -143,6 +131,7 @@ function Home() {
       displayedCountries = displayedCountries.filter(
         (country) => country.continent === selectedContinent
       );
+
     }
 
 
@@ -248,18 +237,19 @@ function Home() {
         </>
       )}
 
-      {selectedCountry && (
-        <div className={Styles.selected}>
-          <Details selectedCountry={selectedCountry} />
-        </div>
-      )}
 
       {isSearchResults && (
-        <div className={Styles.container}>
+        <div className={Styles.container} onClick={handleCountryClick} >
           {renderCountries()}
         </div>
       )}
+      {selectedCountry && (
+        <div className={Styles.selected}>
+          <Details selectedCountry={selectedCountry} onClick={handleCountryClick} />
+        </div>
+      )}
     </div>
+    
   );
 }
 

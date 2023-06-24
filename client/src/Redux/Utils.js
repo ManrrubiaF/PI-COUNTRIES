@@ -1,6 +1,8 @@
 import axios from "axios";
+import { searchCountry, LOADCOUNTRIES, GETACTIVITIES } from "./actions";
 
-const URL = 'localhost:3001'
+const URL = 'http://localhost:3001'
+
 
 export const sortCountriesByPopulation = (countries, sortOrder) => {
   const sortedCountries = [...countries];
@@ -42,6 +44,39 @@ export const sortCountriesAlphabetically = (countries, sortOrder) => {
   return sortedCountries;
 };
 
+
+export const onSearching = (name, dispatch) => {
+  return axios.get(`${URL}/countries/name?name=${name}`)
+  .then((response) => {
+    if(response.data){
+      dispatch(searchCountry(response.data));
+    }
+  })
+  .catch((error) => {
+    alert(error, `That country doesn't exist or we don't have information about it.`);
+  });
+};
+
+export const loadCountries = (dispatch) => {
+  return axios.get(`${URL}/countries`)
+  .then((response)=>{
+    if(response.data){
+      dispatch(LOADCOUNTRIES(response.data));
+    }
+  })
+  .catch ((error) => {
+    console.error(`Couldn't load countries.`, error);    
+  });
+};
+
+export const fetchActivities = (dispatch) => {
+  return axios.get(`${URL}/activities`)
+  .then((response)=>{
+    if(response.data){
+      dispatch(GETACTIVITIES(response.data))
+    }
+  })
+}
 
 export const selectCountries = (state) => state.countries.countries;
 export const selectLoading = (state) => state.countries.loading;
