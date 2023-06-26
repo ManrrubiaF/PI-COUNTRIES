@@ -25,10 +25,10 @@ export const setSortOrder = (order) => ({
   payload: order,
 });
 
-export const searchCountry = (name) => {
+export const searchCountry = (data) => {
   return {
     type: SEARCH_COUNTRY,
-    payload: name
+    payload: data
   };
 };
 

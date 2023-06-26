@@ -1,5 +1,5 @@
 import axios from "axios";
-import { searchCountry, LOADCOUNTRIES, GETACTIVITIES } from "./actions";
+import { searchCountry, LOADCOUNTRIES, GETACTIVITIES, sel_country } from "./actions";
 
 const URL = 'http://localhost:3001'
 

@@ -53,7 +53,6 @@ const reducer = (state = initialState, action) => {
         isSearchResults: true,
         activePage: 1,
         isLoading: false,
-        selectedCountry: action.payload.id,
       };
     case LOAD_COUNTRIES:
       return {
@@ -90,6 +89,7 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         selectedCountry: action.payload,
+        searchResults: [],
         isLoading: false,
         isSearchResults: false,
         

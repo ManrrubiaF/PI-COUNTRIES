@@ -109,7 +109,6 @@ function Home() {
     setSelectedActivity(activity);
     dispatch(setPage(1));
   };
-  console.log(selectedCountry)
 
   const renderCountries = () => {
     let displayedCountries = countries;
@@ -239,7 +238,7 @@ function Home() {
 
 
       {isSearchResults && (
-        <div className={Styles.container} onClick={handleCountryClick} >
+        <div className={Styles.container } onClick={handleCountryClick} >
           {renderCountries()}
         </div>
       )}

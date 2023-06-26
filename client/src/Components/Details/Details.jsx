@@ -41,7 +41,6 @@ function Details({ selectedCountry }) {
   const Handleclick = () => {
     dispatch(backclick());
     navigate('/Home');
-    dispatch(setPage(pageNumber));
   }
 
   return (

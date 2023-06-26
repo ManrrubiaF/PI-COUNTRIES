@@ -5,13 +5,15 @@ import Styles from './Form.module.css';
 import { onSearching, loadCountries } from '../../Redux/Utils';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { fetchActivities } from '../../Redux/Utils'
 
 const URL = 'http://localhost:3001';
 
 function FormPage() {
     const navigate = useNavigate();
-    const [buttonstate, setButtonState] = useState(true);
+    const [buttonstate, setButtonState] = useState(false);
     const dispatch = useDispatch();
+    const activities = useSelector((state) => state.activities)
     const [errors, setErrors] = useState({});
     const [Data, setData] = useState({
         name: '',
@@ -21,10 +23,14 @@ function FormPage() {
         countries: [],
     });
     const allcountries = useSelector((state) => state.countries);
+    const [filtercountries, setFiltercountries] = useState([]);
+    const [sortedCountries, setSortedCountries] = useState([]);
+
 
 
     useEffect(() => {
         loadcountries();
+        fetchActivities(dispatch);
 
     }, []);
 
@@ -37,13 +43,39 @@ function FormPage() {
         navigate('/Home')
     };
 
+
+    const countriesfields = (Data) => {
+        const matchingActivity = activities.find(activity => activity.name.toLowerCase() === Data.name.toLowerCase());
+
+        if (matchingActivity) {
+
+            return axios.get(`${URL}/activities/${matchingActivity.ID}/countries`)
+                .then((response) => {
+                    if (response.data) {
+                        const countryIDs = response.data;
+                        const newcountries = allcountries.filter(country => !countryIDs.includes(country.db_id));
+                        setFiltercountries(newcountries);
+                        setSortedCountries(newcountries.sort((a, b) =>
+                            a.name.common.localeCompare(b.name.common)));
+                    }
+                }).catch((error) => {
+                    console.error(error, `Server Error`);
+                });
+        } else {
+            setFiltercountries(allcountries);
+            setSortedCountries(allcountries.sort((a, b) =>
+                a.name.common.localeCompare(b.name.common)
+            ));
+        }
+    }
+
+
     const validation = () => {
         const error = {};
 
         if (Data.name.length === 0) {
             error.name = "Name is required.";
-        }
-
+        } 
         if (Data.difficulty === "") {
             error.difficulty = 'Difficulty is required.';
         }
@@ -64,25 +96,32 @@ function FormPage() {
     };
 
     useEffect(() => {
+        countriesfields(Data);
+    }, [Data.name]);
+
+    useEffect(() => {
         const resultform = validation()
         setErrors(resultform);
-        if (Object.keys(resultform).length === 0) {
-            setButtonState(false);
-        } else {
-            setButtonState(true);
-        }
 
+
+        if (Object.keys(resultform).length === 0) {
+            setButtonState(true);
+        } else {
+            setButtonState(false)
+        }
 
     }, [Data]);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
         if (!buttonstate) {
-            
+
             try {
-                const response = await axios.post(`${URL}/activities`, Data ,{headers: {
-                    'Content-Type': 'application/json',
-                  }});
+                const response = await axios.post(`${URL}/activities`, Data, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
                 alert('Actividad turística creada:', response.data);
 
                 setData({
@@ -116,11 +155,8 @@ function FormPage() {
         }
 
         validation(name, value);
-    }
 
-    const sortedCountries = allcountries.sort((a, b) =>
-        a.name.common.localeCompare(b.name.common)
-    );
+    }
 
     return (
         <div className={Styles.container}>
@@ -179,10 +215,10 @@ function FormPage() {
                         </div>
                     </form>
                     <div className={Styles.divbutton}>
-                            {!buttonstate && (
-                                <button type="submit" onClick={handleSubmit} >Create Tourist Activity</button>
-                            )}
-                        </div>
+                        {buttonstate && (
+                            <button type="submit" onClick={handleSubmit} >Create Tourist Activity</button>
+                        )}
+                    </div>
 
                 </div>
             </div>
