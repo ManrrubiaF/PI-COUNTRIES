@@ -41,11 +41,12 @@ function Details({ selectedCountry }) {
   const Handleclick = () => {
     dispatch(backclick());
     navigate('/Home');
+    dispatch(setPage(pageNumber));
   }
 
   return (
-    <div className={Styles.containerall} onClick={Handleclick}>
-      <button className={Styles.button}>
+    <div className={Styles.containerall} >
+      <button className={Styles.button} onClick={Handleclick}>
         Back
       </button>
       {country.name ? (
