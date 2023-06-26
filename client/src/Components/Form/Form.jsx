@@ -114,8 +114,8 @@ function FormPage() {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        if (!buttonstate) {
-
+        console.log(Data)
+        if (buttonstate) {
             try {
                 const response = await axios.post(`${URL}/activities`, Data, {
                     headers: {
@@ -123,7 +123,6 @@ function FormPage() {
                     }
                 });
                 alert('Actividad turística creada:', response.data);
-
                 setData({
                     name: '',
                     difficulty: '',
