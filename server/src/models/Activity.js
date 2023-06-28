@@ -25,8 +25,8 @@ module.exports = (sequelize) => {
             allowNull: false,
         }
     }, {
-        tableName: 'Activity', // Nombre de la tabla en la base de datos
-        timestamps: false, // Desactiva la gestión automática de timestamps
+        tableName: 'Activity',
+        timestamps: false, 
     });
 
     return Activity;

@@ -1,14 +1,13 @@
-const { conn } = require('../db');
-const Activity = require('../models/Activity')(conn);
-const CountryActivities = require('../models/CountryActivities')(conn);
+const { Activity, CountryActivities, conn } = require('../db');
 
 const CreateActivity = async (req, res) => {
     try {
         const { name, difficulty, duration, Season, countries } = req.body;
-
         let activity;
 
-        const existingActivity = await Activity.findOne({ name });
+        const existingActivity = await Activity.findOne({ 
+            where: { name },
+            raw: true });
         if (!existingActivity) {
             
             activity = await Activity.create({
@@ -17,9 +16,12 @@ const CreateActivity = async (req, res) => {
                 duration,
                 Season,
             });
+            await activity.reload();
         } else {
             activity = existingActivity;
         }
+
+        
 
         const countryActivityPromises = countries.map(countryId => {
             return CountryActivities.create({

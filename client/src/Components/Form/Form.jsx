@@ -23,7 +23,6 @@ function FormPage() {
         countries: [],
     });
     const allcountries = useSelector((state) => state.countries);
-    const [filtercountries, setFiltercountries] = useState([]);
     const [sortedCountries, setSortedCountries] = useState([]);
 
 
@@ -46,7 +45,6 @@ function FormPage() {
 
     const countriesfields = (Data) => {
         const matchingActivity = activities.find(activity => activity.name.toLowerCase() === Data.name.toLowerCase());
-
         if (matchingActivity) {
 
             return axios.get(`${URL}/activities/${matchingActivity.ID}/countries`)
@@ -54,15 +52,23 @@ function FormPage() {
                     if (response.data) {
                         const countryIDs = response.data;
                         const newcountries = allcountries.filter(country => !countryIDs.includes(country.db_id));
-                        setFiltercountries(newcountries);
                         setSortedCountries(newcountries.sort((a, b) =>
                             a.name.common.localeCompare(b.name.common)));
-                    }
+                        if((Data.countries).length > 0){
+                            const filterselect = (Data.countries).filter(country => !countryIDs.includes(parseInt(country)))
+                            const updatedData = {
+                                ...Data,
+                                countries: filterselect
+                              };
+                              setData(updatedData);;
+                        }
+
+                            
+                    } 
                 }).catch((error) => {
                     console.error(error, `Server Error`);
                 });
         } else {
-            setFiltercountries(allcountries);
             setSortedCountries(allcountries.sort((a, b) =>
                 a.name.common.localeCompare(b.name.common)
             ));
@@ -73,9 +79,9 @@ function FormPage() {
     const validation = () => {
         const error = {};
 
-        if (Data.name.length === 0) {
+        if (Data.name.trim('').length === 0 ) {
             error.name = "Name is required.";
-        } 
+        }
         if (Data.difficulty === "") {
             error.difficulty = 'Difficulty is required.';
         }
@@ -104,7 +110,7 @@ function FormPage() {
         setErrors(resultform);
 
 
-        if (Object.keys(resultform).length === 0) {
+        if (Object.keys(resultform).length === 0 && Data.countries) {
             setButtonState(true);
         } else {
             setButtonState(false)
@@ -114,25 +120,23 @@ function FormPage() {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        console.log(Data)
-        if (buttonstate) {
-            try {
-                const response = await axios.post(`${URL}/activities`, Data, {
-                    headers: {
-                        'Content-Type': 'application/json',
-                    }
-                });
-                alert('Actividad turística creada:', response.data);
-                setData({
-                    name: '',
-                    difficulty: '',
-                    duration: '',
-                    Season: '',
-                    countries: [],
-                });
-            } catch (error) {
-                console.error('Error al crear la actividad turística:', error);
-            }
+        try {
+            const response = await axios.post(`${URL}/activities`, Data, {
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+            alert('Activity created successfully', response.data);
+            setData({
+                name: '',
+                difficulty: '',
+                duration: '',
+                Season: '',
+                countries: [],
+            });
+        } catch (error) {
+            console.error('Error trying to create activity:', error);
+
         }
 
     };
@@ -152,6 +156,7 @@ function FormPage() {
                 [name]: value
             }));
         }
+        
 
         validation(name, value);
 
@@ -176,7 +181,7 @@ function FormPage() {
                         <div className={Styles.divform}>
                             <label htmlFor="difficulty">Difficuty: <span>*</span></label>
                             <select name="difficulty" value={Data.difficulty} onChange={handleChange}>
-                                <option value="">Select an option</option>
+                                <option value="" disabled>Select an option</option>
                                 <option value="Easy">Easy</option>
                                 <option value="Medium">Medium</option>
                                 <option value="Hard">Hard</option>
@@ -193,7 +198,7 @@ function FormPage() {
                         <div className={Styles.divform}>
                             <label htmlFor="Season">Season: <span >*</span></label>
                             <select name="Season" value={Data.Season} onChange={handleChange}>
-                                <option value="">Select an option</option>
+                                <option value="" disabled>Select an option</option>
                                 <option value="Summer">Summer</option>
                                 <option value="Autumn">Autumn</option>
                                 <option value="Winter">Winter</option>
@@ -205,7 +210,7 @@ function FormPage() {
                         <div className={Styles.divform}>
                             <label htmlFor="countries">Countries: <span>*</span>   Ctrl + Click for multiple selections.</label>
                             <select name="countries" multiple value={Data.countries} onChange={handleChange}>
-                                <option value="">Select an option</option>
+                                <option value="" disabled>Select an option</option>
                                 {sortedCountries.map(country => (
                                     <option key={country.db_id} value={country.db_id}>{country.name.common}</option>
                                 ))}
